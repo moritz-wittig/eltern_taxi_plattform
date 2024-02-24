@@ -2,6 +2,10 @@
 
 A new Flutter project with flutter_rust_bridge.   
 
+
+## Installation
+- Flutter: Follow [Flutter Docs](https://docs.flutter.dev/get-started/install). In case of developing on MacOS this includes downloading and setting up Xcode 15 & CocoaPods.
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
