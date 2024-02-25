@@ -1,0 +1,14 @@
+[package]
+name = "eltern_taxi_plattform"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "eltern_taxi_plattform"
+crate-type = ["staticlib"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+flutter_rust_bridge = "1.80.1"
+flutter_rust_bridge_macros = "1.80.1"
