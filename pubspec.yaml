@@ -14,15 +14,16 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.6
-  ffi: ^2.1.0
-  flutter_rust_bridge: 1.80.1
+  intl: ^0.17.0
+  sqflite: ^2.3.2
+  sqflite_common_ffi: ^2.3.2+1
+  sqflite_common_ffi_web: ^0.4.2+3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   flutter_lints: ^3.0.0
-  ffigen: ^8.0.1
 
 flutter:
 
