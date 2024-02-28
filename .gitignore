@@ -1,6 +1,9 @@
 # Generated files
 rust/target/
 
+# Flutter build files
+build/
+
 # files and directories created by pub
 .dart_tool/
 .packages
