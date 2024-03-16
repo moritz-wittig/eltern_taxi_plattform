@@ -11,7 +11,7 @@ use warp::{
 };
 
 
-const BEARER: &str = "Bearer";
+const BEARER: &str = "Bearer ";
 const JWT_SECRET: &[u8] = b"secret"; //TODO change to a long, securely stored string that is changed regularly
 // TODO: consider having a JWT_SECRET per user to have the option to invalidate single users
 
@@ -61,7 +61,7 @@ pub fn with_auth(role: Role) -> impl Filter<Extract = (String,), Error = Rejecti
 
 pub fn create_jwt(uid: &str, role: &Role) -> Result<String>{
     let expiration = Utc::now()
-        .checked_add_signed(chrono::Duration::seconds(60)) //TODO: increase expiration for live system
+        .checked_add_signed(chrono::Duration::seconds(120)) //TODO: increase expiration for live system
         .expect("valid timestamp")
         .timestamp();
 
