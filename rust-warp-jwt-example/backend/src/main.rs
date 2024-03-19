@@ -1,4 +1,5 @@
 use auth::{with_auth, Role};
+use common::User;
 use error::Error::*;
 use std::sync::Arc;
 use std::collections::HashMap;
@@ -17,14 +18,7 @@ type Result<T> = std::result::Result<T, error::Error>; // internal for propagati
 type WebResult<T> = std::result::Result<T, Rejection>; // external for sending errors to caller
 type Users = Arc<RwLock<HashMap<String, User>>>;
 
-// 
-#[derive(Clone)]
-pub struct User{
-    pub uid: String,
-    pub email: String,
-    pub pw: String,
-    pub role: String,
-}
+
 
 #[derive(Deserialize)]
 pub struct LoginRequest{
