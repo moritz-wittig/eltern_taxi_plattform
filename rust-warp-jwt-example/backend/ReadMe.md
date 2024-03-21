@@ -5,4 +5,3 @@
 
 
 ## TODO
-- right now you can also access admin protected urls
