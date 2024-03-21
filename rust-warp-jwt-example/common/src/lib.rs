@@ -11,11 +11,20 @@ pub struct User{
 
 
 
-#[derive(Deserialize)]
+#[derive(Serialize, Deserialize, Clone, Debug, Default)]
+#[serde(rename_all = "camelCase")]
 pub struct LoginRequest{
     pub email: String,
     pub pw: String
 }
+
+#[derive(Serialize, Deserialize, Clone, Debug)]
+#[serde(rename_all = "camelCase")]
+pub struct LoginRequestWrapper{
+    pub user: LoginRequest
+}
+
+
 
 #[derive(Serialize)]
 pub struct LoginResponse{

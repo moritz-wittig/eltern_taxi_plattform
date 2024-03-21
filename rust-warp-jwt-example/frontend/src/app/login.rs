@@ -1,20 +1,37 @@
-use web_sys::js_sys::Math::log;
 use web_sys::HtmlInputElement;
 use gloo_console::log;
 use wasm_bindgen::JsValue;
 use yew::prelude::*;
-use yew_router::prelude::*;
-
-use crate::app::AppRoute;
+use common::{LoginRequest, LoginRequestWrapper};
+use yew_hooks::use_async;
 
 /// Login page
 #[function_component(Login)]
 pub fn login_page() -> Html {
 
+    let login_info = use_state(LoginRequest::default);
+    let user_login = {
+        let login_info = login_info.clone();
+        
+        // TODO: Here we now have to forward this user information to the backend
+        // probably by simply calling the backend function
+        
+        // Implementation in the example
+        // use_async(async move {
+            // let request = LoginRequestWrapper{
+            //     user: (*login_info).clone()
+            // };
+            // login(request).await
+        // })
+
+    };
+
     // in the browser we can only log JavaScript types 
     let oninput_email = {
+        // Yew Callback
         Callback::from(move |e: InputEvent| {
-            let input: HtmlInputElement = e.target_unchecked_into();
+            // Extract target of the event + casting it into HtmlInputElement
+            let input: HtmlInputElement = e.target_unchecked_into(); 
             log!(JsValue::from(input.value()));
         })
     };
