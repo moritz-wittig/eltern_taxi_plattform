@@ -1,12 +1,11 @@
 use auth::{with_auth, Role};
-use common::User;
+use common::{User, LoginRequest, LoginResponse};
 use error::Error::*;
 use std::sync::Arc;
 use std::collections::HashMap;
 use std::convert::Infallible;
 use std::sync::RwLock;
 
-use serde::{Deserialize, Serialize};
 use warp::{reject, reply, Filter, Rejection, Reply};
 
 
@@ -18,21 +17,6 @@ type Result<T> = std::result::Result<T, error::Error>; // internal for propagati
 type WebResult<T> = std::result::Result<T, Rejection>; // external for sending errors to caller
 type Users = Arc<RwLock<HashMap<String, User>>>;
 
-
-
-#[derive(Deserialize)]
-pub struct LoginRequest{
-    pub email: String,
-    pub pw: String
-}
-
-#[derive(Serialize)]
-pub struct LoginResponse{
-    // This (JWT) token is returned to the client, so the user in the future, 
-    // can use it to further (then authenticated) requests by attaching it to the
-    // header.
-    pub token: String
-}
 
 #[tokio::main]
 async fn main(){
