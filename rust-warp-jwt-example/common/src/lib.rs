@@ -18,13 +18,6 @@ pub struct LoginRequest{
     pub pw: String
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug)]
-#[serde(rename_all = "camelCase")]
-pub struct LoginRequestWrapper{
-    pub user: LoginRequest
-}
-
-
 
 #[derive(Serialize)]
 pub struct LoginResponse{
