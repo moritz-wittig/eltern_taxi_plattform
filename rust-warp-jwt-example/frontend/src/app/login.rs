@@ -1,45 +1,93 @@
 use web_sys::HtmlInputElement;
 use gloo_console::log;
+use gloo_utils::format::JsValueSerdeExt;
 use wasm_bindgen::JsValue;
 use yew::prelude::*;
-use common::{LoginRequest, LoginRequestWrapper};
+use common::LoginRequest;
 use yew_hooks::use_async;
+use reqwest::header::CONTENT_TYPE;
+
 
 /// Login page
 #[function_component(Login)]
 pub fn login_page() -> Html {
-
-    let login_info = use_state(LoginRequest::default);
+    // UseStateHandle to handle the state of the LoginRequest w/o management of state variables
+    let login_info: UseStateHandle<LoginRequest> = use_state(LoginRequest::default);
     let user_login = {
         let login_info = login_info.clone();
+        let login_request = (*login_info).clone();
         
-        // TODO: Here we now have to forward this user information to the backend
-        // probably by simply calling the backend function
+        log!(JsValue::from_serde(&login_request).unwrap());
         
-        // Implementation in the example
-        // use_async(async move {
-            // let request = LoginRequestWrapper{
-            //     user: (*login_info).clone()
-            // };
-            // login(request).await
-        // })
+        use_async(async move {
+            let login_request = (*login_info).clone();
+            let client = reqwest::Client::new();
 
+            // Serialize the LoginRequest object into JSON
+            let body = serde_json::to_string(&login_request)
+                .expect("Failed to serialize LoginRequest to JSON");
+            
+            log!("body");
+            log!(JsValue::from_str(body.as_str()));
+
+            let response = client
+                .post("http://localhost:8000/login")
+                .header(CONTENT_TYPE, "application/json")
+                .body(body)
+                .send()
+                .await;
+            
+            // Return the response as a Result
+            match response {
+                Ok(response) => {
+                    if response.status().is_success() {
+                        log!("All good");
+                        Ok(JsValue::from("Login successful"))
+                    } else {
+                        panic!("PANIc");
+                    }
+                }
+                Err(err) => {
+                    log!("Error");
+                    log!(JsValue::from_str(err.to_string().as_str()));
+                    Err(err.to_string())
+                }
+            }
+        })
+    };
+
+    let onsubmit = {
+        let login_info = login_info.clone();
+        Callback::from(move |e: SubmitEvent| {
+            e.prevent_default(); //prevent form submission from refreshing the page
+            user_login.run();                        
+        })
     };
 
     // in the browser we can only log JavaScript types 
     let oninput_email = {
+        let login_info = login_info.clone();
         // Yew Callback
         Callback::from(move |e: InputEvent| {
             // Extract target of the event + casting it into HtmlInputElement
             let input: HtmlInputElement = e.target_unchecked_into(); 
             log!(JsValue::from(input.value()));
+            
+            let mut info = (*login_info).clone();
+            info.email = input.value();
+            login_info.set(info);
         })
     };
 
     let oninput_password = {
+        let login_info = login_info.clone();
         Callback::from(move |e: InputEvent| {
             let input: HtmlInputElement = e.target_unchecked_into();
-            log!(JsValue::from(input.value()))
+            log!(JsValue::from(input.value()));
+
+            let mut info = (*login_info).clone();
+            info.pw = input.value();
+            login_info.set(info);
         })
     };
 
@@ -54,7 +102,7 @@ pub fn login_page() -> Html {
                             //     { "Need an account?" }
                             // </Link<AppRoute>>
                         </p>
-                        <form>
+                        <form {onsubmit}>
                             <fieldset>
                                 <fieldset class="form-group">
                                     <input
