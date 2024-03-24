@@ -5,7 +5,6 @@ use std::sync::Arc;
 use std::collections::HashMap;
 use std::convert::Infallible;
 use std::sync::RwLock;
-
 use warp::{reject, reply, Filter, Rejection, Reply};
 
 
@@ -25,11 +24,21 @@ async fn main(){
     // --> with these both, we can share users across different threads
     let users = Arc::new(RwLock::new(init_users()));
 
+    // CORS (Cross-Origin Resource Sharing) policy 
+    // security feature by web browsers to restrict webpages from making
+    // requests to servers that are in different origins (e.g. domains).
+    let cors = warp::cors()
+        .allow_methods(vec!["GET", "POST", "DELETE"])
+        .allow_any_origin()
+        .allow_headers(vec!["Access-Control-Allow-Headers", "Access-Control-Request-Method", "Access-Control-Request-Headers", "Origin", "Accept", "X-Requested-With", "Content-Type"]);
+    
+
     let login_route = warp::path!("login")
         .and(warp::post()) // only post requests
         .and(with_users(users.clone())) //injects users data into handler 
         .and(warp::body::json()) //parsing request body from json to rust
-        .and_then(login_handler); // which handler to be invoked when all previous conditions are met
+        .and_then(login_handler) // which handler to be invoked when all previous conditions are met
+        .with(cors); 
 
     let user_route = warp::path!("user")
         .and(with_auth(Role::User))
@@ -56,6 +65,9 @@ fn with_users(users: Users) -> impl Filter<Extract = (Users,), Error = Infallibl
 }
 
 pub async fn login_handler(users: Users, body: LoginRequest) -> WebResult<impl Reply> {
+    // for debugging
+    println!("login_handler");
+    println!("body: {}", body.email);
     
     match users.read() { //read() gives a read-lock on the map
         Ok(read_handle) => {
