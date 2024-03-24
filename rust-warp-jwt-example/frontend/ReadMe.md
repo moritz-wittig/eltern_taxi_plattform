@@ -1,6 +1,10 @@
 ## Testing
 1. Change directory to frontend `cd frontend`
 2. Start Frontend trunk server: `trunk serve --open`
-3. When entering the browser console, you can check the logs
+3. Enter user `user@userland.com` with pw `1234` into the login page
+4. When entering the browser console, you can check the logs
+5. Enter any other email -> check the logs (fail)
+
 
 ## TODO
+- parse and use return JWT token
