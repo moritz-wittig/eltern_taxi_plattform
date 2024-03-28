@@ -12,4 +12,6 @@ This can be checked by going to the Browser Developer Tools -> Application -> St
 --> SessionStorage --> Key: JWT
 
 ## TODO
-- parse and use return JWT token
+- currently there seems to be again issues with CORS settings
+- further the next idea would be to add a new page where we then 
+use the stored JWT and authorize with that.
