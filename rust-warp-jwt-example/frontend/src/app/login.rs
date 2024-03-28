@@ -3,7 +3,7 @@ use gloo_console::log;
 use gloo_utils::format::JsValueSerdeExt;
 use wasm_bindgen::JsValue;
 use yew::prelude::*;
-use common::LoginRequest;
+use common::{LoginRequest, LoginResponse};
 use yew_hooks::use_async;
 use reqwest::header::CONTENT_TYPE;
 
@@ -31,33 +31,45 @@ pub fn login_page() -> Html {
             log!(JsValue::from_str(body.as_str()));
 
             let response = client
-                .post("http://localhost:8000/login")
-                .header(CONTENT_TYPE, "application/json")
-                .body(body)
-                .send()
-                .await;
+            .post("http://localhost:8000/login")
+            .header(CONTENT_TYPE, "application/json")
+            .body(body)
+            .send()
+            .await;
             
-            // Return the response as a Result
-            match response {
+            match response{
                 Ok(response) => {
-                    if response.status().is_success() {
-                        log!("All good");
-                        Ok(JsValue::from("Login successful"))
-                    } else {
-                        panic!("PANIc");
-                    }
+                    match response.status() {
+                        reqwest::StatusCode::OK => {
+                            // on success, parse our JSON to an APIResponse
+                            match response.json::<LoginResponse>().await {
+                                Ok(parsed) => {
+                                    log!("Success!");
+                                    log!(JsValue::from_str(parsed.token.as_str()))
+                                },
+                                Err(_) => println!("Hm, the response didn't match the shape we expected."),
+                            };
+                        }
+                        reqwest::StatusCode::UNAUTHORIZED => {
+                            println!("Need to grab a new token");
+                        }
+                        other => {
+                            panic!("Uh oh! Something unexpected happened: {:?}", other);
+                        }
+                    };
+                    Ok(()) // Return Ok(()) to indicate success
                 }
                 Err(err) => {
+                    // Handle the error
                     log!("Error");
                     log!(JsValue::from_str(err.to_string().as_str()));
-                    Err(err.to_string())
+                    Err(err.to_string()) // Return the error directly
                 }
             }
         })
     };
 
     let onsubmit = {
-        let login_info = login_info.clone();
         Callback::from(move |e: SubmitEvent| {
             e.prevent_default(); //prevent form submission from refreshing the page
             user_login.run();                        

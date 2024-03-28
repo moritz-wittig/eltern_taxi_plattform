@@ -19,7 +19,7 @@ pub struct LoginRequest{
 }
 
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct LoginResponse{
     // This (JWT) token is returned to the client, so the user in the future, 
     // can use it to further (then authenticated) requests by attaching it to the
