@@ -1,3 +1,4 @@
+use gloo_storage::{SessionStorage, Storage};
 use web_sys::HtmlInputElement;
 use gloo_console::log;
 use gloo_utils::format::JsValueSerdeExt;
@@ -45,7 +46,11 @@ pub fn login_page() -> Html {
                             match response.json::<LoginResponse>().await {
                                 Ok(parsed) => {
                                     log!("Success!");
-                                    log!(JsValue::from_str(parsed.token.as_str()))
+                                    log!(JsValue::from_str(parsed.token.as_str()));
+                                    
+                                    // Store JWT in local storage
+                                    SessionStorage::set("JWT", parsed.token.as_str()).unwrap();
+
                                 },
                                 Err(_) => println!("Hm, the response didn't match the shape we expected."),
                             };

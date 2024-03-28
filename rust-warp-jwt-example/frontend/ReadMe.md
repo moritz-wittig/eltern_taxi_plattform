@@ -6,5 +6,10 @@
 5. Enter any other email -> check the logs (fail)
 
 
+## Random
+- after successful login, JWT is stored locally in the browser in the SessionStorage.
+This can be checked by going to the Browser Developer Tools -> Application -> Storage
+--> SessionStorage --> Key: JWT
+
 ## TODO
 - parse and use return JWT token
