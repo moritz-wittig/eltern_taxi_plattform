@@ -32,11 +32,11 @@ pub fn login_page() -> Html {
             log!(JsValue::from_str(body.as_str()));
 
             let response = client
-            .post("http://localhost:8000/login")
-            .header(CONTENT_TYPE, "application/json")
-            .body(body)
-            .send()
-            .await;
+                .post("http://localhost:8000/login")
+                .header(CONTENT_TYPE, "application/json")
+                .body(body)
+                .send()
+                .await;
             
             match response{
                 Ok(response) => {
