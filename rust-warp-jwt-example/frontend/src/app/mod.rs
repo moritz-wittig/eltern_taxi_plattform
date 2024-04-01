@@ -1,5 +1,7 @@
 pub mod login;
+pub mod settings;
 use login::Login;
+use settings::Settings;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
@@ -9,6 +11,8 @@ use yew_router::prelude::*;
 pub enum AppRoute {
     #[at("/")]
     Login,
+    #[at("/settings")]
+    Settings,
     #[not_found]
     #[at("/404")]
     NotFound,
@@ -17,6 +21,7 @@ pub enum AppRoute {
 pub fn switch(route: AppRoute) -> Html {
     match route {
         AppRoute::Login => html! {<Login />},
+        AppRoute::Settings => html!(<Settings/>),
         AppRoute::NotFound => html! { "Page not found" },
     }
 }
@@ -25,8 +30,8 @@ pub fn switch(route: AppRoute) -> Html {
 #[function_component(App)]
 pub fn app() -> Html {
     html! {
-        <HashRouter>
+        <BrowserRouter>
             <Switch<AppRoute> render={switch} />
-        </HashRouter>
+        </BrowserRouter>
     }
 }
