@@ -80,10 +80,16 @@ pub async fn login_handler(users: Users, body: LoginRequest) -> WebResult<impl R
                         .map_err(|e| reject::custom(e))?;
                     Ok(reply::json(&LoginResponse { token }))
                 }
-                None => Err(reject::custom(WrongCredentialsError)),
+                None => {
+                    println!("WrongCredentialsError");
+                    Err(reject::custom(WrongCredentialsError))
+                }
             }
         }
-        Err(_) => Err(reject()),
+        Err(_) => {
+            println!("Access denied for email {}", body.email);
+            Err(reject())
+        }
     }
 }
 

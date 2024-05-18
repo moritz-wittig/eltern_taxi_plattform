@@ -58,8 +58,12 @@ pub fn login_page() -> Html {
                         reqwest::StatusCode::UNAUTHORIZED => {
                             println!("Need to grab a new token");
                         }
+                        reqwest::StatusCode::FORBIDDEN => {
+                            log!("Forbidden");
+                        }
                         other => {
-                            panic!("Uh oh! Something unexpected happened: {:?}", other);
+                            log!("Uh oh! Something unexpected happened");
+                            log!(JsValue::from_str(format!("{:?}", other).as_str()));
                         }
                     };
                     Ok(()) // Return Ok(()) to indicate success
