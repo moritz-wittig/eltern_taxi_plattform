@@ -7,11 +7,16 @@ use yew::prelude::*;
 use common::{LoginRequest, LoginResponse};
 use yew_hooks::use_async;
 use reqwest::header::CONTENT_TYPE;
+use yew_router::hooks::use_navigator;
+
+use crate::app::AppRoute;
 
 
 /// Login page
 #[function_component(Login)]
 pub fn login_page() -> Html {
+    let navigator = use_navigator().unwrap();
+
     // UseStateHandle to handle the state of the LoginRequest w/o management of state variables
     let login_info: UseStateHandle<LoginRequest> = use_state(LoginRequest::default);
     let user_login = {
@@ -32,7 +37,7 @@ pub fn login_page() -> Html {
             log!(JsValue::from_str(body.as_str()));
 
             let response = client
-                .post("http://localhost:8000/login")
+                .post("http://localhost:8000/login") // send post request to backend (-> login_route)
                 .header(CONTENT_TYPE, "application/json")
                 .body(body)
                 .send()
@@ -50,7 +55,9 @@ pub fn login_page() -> Html {
                                     
                                     // Store JWT in local storage
                                     SessionStorage::set("JWT", parsed.token.as_str()).unwrap();
-
+                                    
+                                    // Redirect to the Settings route here
+                                    navigator.push(&AppRoute::Settings);
                                 },
                                 Err(_) => println!("Hm, the response didn't match the shape we expected."),
                             };
